@@ -11,6 +11,7 @@ import math
 import torch.nn as nn
 import torch.nn.init as init
 
+import logging
 
 def get_mean_and_std(dataset):
     '''Compute the mean and std value of dataset.'''
@@ -90,6 +91,7 @@ def progress_bar(current, total, msg=None):
     else:
         sys.stdout.write('\n')
     sys.stdout.flush()
+
 
 def format_time(seconds):
     days = int(seconds / 3600/24)

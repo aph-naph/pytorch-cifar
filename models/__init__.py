@@ -16,3 +16,5 @@ from .efficientnet import *
 from .regnet import *
 from .dla_simple import *
 from .dla import *
+from .default_residual_conv_model import *
+from .default_conv_model import *
