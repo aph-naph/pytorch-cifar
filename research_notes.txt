@@ -1,0 +1,132 @@
+CIFAR10 Results:
+
+Model: BasicConvModel-ReLU                                                                                                                                                                           
+Train config: BasicConvModel-ReLU-epochs-50
+Epoch: 50
+    Train -  Loss: 0.011 | Acc: 99.813% (44916/45000)                                                           
+    Val   -  Loss: 0.282 | Acc: 92.120% (4606/5000)                                                                
+Test set  -  Loss: 0.295 | Acc: 91.730% (9173/10000)
+
+
+Model: BasicConvModel-LeakyReLU                                                                   
+Train config: BasicConvModel-LeakyReLU-epochs-50  
+Epoch: 50
+    Train -  Loss: 0.011 | Acc: 99.842% (44929/45000)                                                          
+    Val   -  Loss: 0.273 | Acc: 92.040% (4602/5000)                                                                
+Test set  -  Loss: 0.295 | Acc: 91.600% (9160/10000)
+
+
+Model: BasicConvModel-MishAuto                                                                    
+Train config: BasicConvModel-MishAuto-epochs-50
+Epoch: 50
+    Train -  Loss: 0.012 | Acc: 99.764% (44894/45000)                                                          
+    Val   -  Loss: 0.302 | Acc: 92.100% (4605/5000)                                                                
+Test set  -  Loss: 0.297 | Acc: 91.670% (9167/10000)
+
+
+Model: BasicConvModel-SwishAuto                                                                   
+Train config: BasicConvModel-SwishAuto-epochs-50
+Epoch: 50
+    Train -  Loss: 0.011 | Acc: 99.813% (44916/45000)                                                          
+    Val   -  Loss: 0.294 | Acc: 91.920% (4596/5000)                                                                
+Test set  -  Loss: 0.300 | Acc: 91.740% (9174/10000)
+
+
+Model: BasicConvModel-ProposedAuto                                                                                                                                                                   
+Train config: BasicConvModel-ProposedAuto-epochs-50 
+Epoch: 50
+    Train -  Loss: 0.011 | Acc: 99.824% (44921/45000)                                                          
+    Val   -  Loss: 0.284 | Acc: 91.880% (4594/5000)                                                                
+Test set  -  Loss: 0.283 | Acc: 92.080% (9208/10000)
+
+
+Model: BasicConvModel-Sigmoid
+Train config: BasicConvModel-Sigmoid-epochs-50
+Epoch: 50                                                                                                                                                                                        
+    Train -  Loss: 0.011 | Acc: 99.809% (44914/45000)                                                          
+    Val   -  Loss: 0.282 | Acc: 92.160% (4608/5000)                                                                
+Test set  -  Loss: 0.295 | Acc: 91.810% (9181/10000)
+
+
+Model: BasicConvModel-GELU                                                                                                                                                                           
+Train config: BasicConvModel-GELU-epochs-50
+Epoch: 50
+    Train -  Loss: 0.011 | Acc: 99.807% (44913/45000)                                                          
+    Val   -  Loss: 0.279 | Acc: 92.260% (4613/5000)                                                                
+Test set  -  Loss: 0.298 | Acc: 91.610% (9161/10000)
+
+
+Model: BasicConvModel-Tanh                                                                                                                                                                           
+Train config: BasicConvModel-Tanh-epochs-50 
+Epoch: 50
+    Train -  Loss: 0.011 | Acc: 99.831% (44924/45000)                                                          
+    Val   -  Loss: 0.283 | Acc: 92.120% (4606/5000)                                                                
+Test set  -  Loss: 0.293 | Acc: 91.770% (9177/10000)
+
+
+
+
+MNIST Results:
+
+Model: BasicConvModel-ReLU                                                                                                                                                                           
+Train config: BasicConvModel-ReLU-epochs-20 
+Epoch: 20                                                                                                                                                                                            
+    Train -  Loss: 0.001 | Acc: 100.000% (54000/54000)
+    Val   -  Loss: 0.015 | Acc: 99.650% (5979/6000)
+Test set  -  Loss: 0.013 | Acc: 99.590% (9959/10000)       
+
+
+Model: BasicConvModel-LeakyReLU                                                                                                                                                                      
+Train config: BasicConvModel-LeakyReLU-epochs-20      
+Epoch: 20
+    Train -  Loss: 0.001 | Acc: 100.000% (54000/54000)                                                         
+    Val   -  Loss: 0.016 | Acc: 99.567% (5974/6000)                                                               
+Test set  -  Loss: 0.013 | Acc: 99.570% (9957/10000)
+
+
+Model: BasicConvModel-MishAuto                                                                                                                                                                       
+Train config: BasicConvModel-MishAuto-epochs-20
+Epoch: 20                                                                                                                                                                                            
+    Train -  Loss: 0.001 | Acc: 100.000% (54000/54000)                                                         
+    Val   -  Loss: 0.016 | Acc: 99.600% (5976/6000)                                                               
+Test set  -  Loss: 0.012 | Acc: 99.630% (9963/10000)
+
+
+Model: BasicConvModel-SwishAuto                                                                                                                                                                      
+Train config: BasicConvModel-SwishAuto-epochs-20 
+Epoch: 20
+    Train -  Loss: 0.001 | Acc: 100.000% (54000/54000)                                                         
+    Val   -  Loss: 0.016 | Acc: 99.533% (5972/6000)                                                               
+Test set  -  Loss: 0.013 | Acc: 99.550% (9955/10000)
+
+
+Model: BasicConvModel-ProposedAuto
+Train config: BasicConvModel-ProposedAuto-epochs-20
+Epoch: 20
+    Train -  Loss: 0.001 | Acc: 100.000% (54000/54000)                                                         
+    Val   -  Loss: 0.016 | Acc: 99.567% (5974/6000)                                                               
+Test set  -  Loss: 0.013 | Acc: 99.590% (9959/10000)
+
+
+Model: BasicConvModel-Sigmoid                                                                                                                                                                        
+Train config: BasicConvModel-Sigmoid-epochs-20
+Epoch: 20
+    Train -  Loss: 0.001 | Acc: 100.000% (54000/54000)                                                         
+    Val   -  Loss: 0.015 | Acc: 99.617% (5977/6000)                                                               
+Test set  -  Loss: 0.012 | Acc: 99.590% (9959/10000)
+
+
+Model: BasicConvModel-GELU                                                                                                                                                                           
+Train config: BasicConvModel-GELU-epochs-20
+Epoch: 20
+    Train -  Loss: 0.001 | Acc: 100.000% (54000/54000)                                                         
+    Val   -  Loss: 0.016 | Acc: 99.600% (5976/6000)                                                               
+Test set  -  Loss: 0.013 | Acc: 99.590% (9959/10000)
+
+
+Model: BasicConvModel-Tanh
+Train config: BasicConvModel-Tanh-epochs-20
+Epoch: 20
+    Train -  Loss: 0.001 | Acc: 100.000% (54000/54000)                                                         
+    Val   -  Loss: 0.017 | Acc: 99.583% (5975/6000)                                                               
+Test set  -  Loss: 0.013 | Acc: 99.580% (9958/10000)

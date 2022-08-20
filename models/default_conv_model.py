@@ -11,10 +11,10 @@ def conv_bn(channels_in, channels_out, kernel_size=3, stride=1, padding=1, group
             act_fn(inplace=True)
     )
 
-def BasicConvModel(num_class, act_fn=ch.nn.ReLU):
+def BasicConvModel(n_channels, num_classes, act_fn=ch.nn.ReLU):
     model_name = f"BasicConvModel-{act_fn.__name__}"
     model = ch.nn.Sequential(
-        conv_bn(3, 64, kernel_size=3, stride=1, padding=1),
+        conv_bn(n_channels, 64, kernel_size=3, stride=1, padding=1),
         conv_bn(64, 128, kernel_size=5, stride=2, padding=2),
         conv_bn(128, 256, kernel_size=3, stride=1, padding=1),
         ch.nn.MaxPool2d(2),
@@ -23,7 +23,7 @@ def BasicConvModel(num_class, act_fn=ch.nn.ReLU):
         conv_bn(256, 128, kernel_size=3, stride=1, padding=0),
         ch.nn.AdaptiveMaxPool2d((1, 1)),
         Flatten(),
-        ch.nn.Linear(128, num_class, bias=False),
+        ch.nn.Linear(128, num_classes, bias=False),
     )
     model = model.to(memory_format=ch.channels_last).cuda()
     return model, model_name

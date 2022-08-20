@@ -1,4 +1,4 @@
-'''Train CIFAR10 with PyTorch.'''
+'''Train MNIST with PyTorch.'''
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -26,7 +26,7 @@ torch.manual_seed(0)
 random.seed(0)
 np.random.seed(0)
 
-parser = argparse.ArgumentParser(description='PyTorch CIFAR10 Training')
+parser = argparse.ArgumentParser(description='PyTorch MNIST Training')
 parser.add_argument('--act_fn', default=1, type=int, help='activation function')
 parser.add_argument('--max_epochs', default=50, type=int, help='epochs')
 parser.add_argument('--lr', default=0.1, type=float, help='learning rate')
@@ -41,15 +41,13 @@ start_epoch = 0  # start from epoch 0 or last checkpoint epoch
 # Data
 print('==> Preparing data..')
 train_transform = transforms.Compose([
-    transforms.RandomCrop(32, padding=4),
-    transforms.RandomHorizontalFlip(),
     transforms.ToTensor(),
-    transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
+    transforms.Normalize((0.1307,), (0.3081,))
 ])
 
 val_test_transform = transforms.Compose([
     transforms.ToTensor(),
-    transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
+    transforms.Normalize((0.1307,), (0.3081,))
 ])
 
 batch_size = 128
@@ -57,7 +55,7 @@ val_split = 0.1
 num_workers = 8
 
 train_loader, val_loader, test_loader = get_data_loaders(
-    dataset=torchvision.datasets.CIFAR10,
+    dataset=torchvision.datasets.MNIST,
     data_dir='./data',
     train_transform=train_transform,
     val_transform=val_test_transform,
@@ -67,8 +65,7 @@ train_loader, val_loader, test_loader = get_data_loaders(
     num_workers=num_workers
 )
 
-classes = ('plane', 'car', 'bird', 'cat', 'deer',
-           'dog', 'frog', 'horse', 'ship', 'truck')
+classes = tuple(range(10))
 
 # Model
 print('\n==> Building model..')
@@ -91,8 +88,8 @@ print('\n==> Building model..')
 
 act_fns = [nn.ReLU, nn.LeakyReLU, MishAuto, SwishAuto, ProposedAuto, nn.Sigmoid, nn.GELU, nn.Tanh]
 # net, model_name = BasicConvResModel(len(classes), nn.ReLU)
-net, model_name = BasicConvModel(3, len(classes), act_fns[args.act_fn - 1])
-
+net, model_name = BasicConvModel(1, len(classes), act_fns[args.act_fn - 1])
+ds_name = 'MNIST'
 max_epochs = args.max_epochs
 total_epochs = max_epochs - start_epoch
 
@@ -115,7 +112,10 @@ curr_time = lambda: datetime.strftime(datetime.now(), fmt)
 ckpt_dir = model_name
 start_time = curr_time()
 
-logfile = "./logs/{}-{}-epochs-{}.log".format(model_name, start_time, total_epochs)
+if not os.path.isdir('./logs/{}'.format(ds_name)):
+    os.mkdir('./logs/{}'.format(ds_name))
+
+logfile = "./logs/{}/{}-{}-epochs-{}.log".format(ds_name, model_name, start_time, total_epochs)
 logging.basicConfig(filename=logfile, level=logging.INFO, format='%(asctime)s %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p - ')
 logging.info("Logger initialized.")
 
@@ -199,15 +199,18 @@ def val(epoch):
         if not os.path.isdir('checkpoint'):
             os.mkdir('checkpoint')
 
-        if not os.path.isdir('checkpoint/{}'.format(ckpt_dir)):
-            os.mkdir('checkpoint/{}'.format(ckpt_dir))
+        if not os.path.isdir('checkpoint/{}'.format(ds_name)):
+            os.mkdir('checkpoint/{}'.format(ds_name))
 
-        if not os.path.isdir('checkpoint/{}/{}'.format(ckpt_dir, start_time)):
-            os.mkdir('checkpoint/{}/{}'.format(ckpt_dir, start_time))
+        if not os.path.isdir('checkpoint/{}/{}'.format(ds_name, ckpt_dir)):
+            os.mkdir('checkpoint/{}/{}'.format(ds_name, ckpt_dir))
+
+        if not os.path.isdir('checkpoint/{}/{}/{}'.format(ds_name, ckpt_dir, start_time)):
+            os.mkdir('checkpoint/{}/{}/{}'.format(ds_name, ckpt_dir, start_time))
 
         torch.save(
             state, 
-            './checkpoint/{}/{}/{}.pth'.format(ckpt_dir, start_time, curr_time()))
+            './checkpoint/{}/{}/{}/{}.pth'.format(ds_name, ckpt_dir, start_time, curr_time()))
         best_acc = acc
 
 def test():

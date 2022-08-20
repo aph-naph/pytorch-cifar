@@ -3,3 +3,9 @@ data/
 checkpoint/
 models/__pycache__/
 logs/
+mnist/
+.ipynb_checkpoints
+*.json
+*.csv
+*.swp
+
