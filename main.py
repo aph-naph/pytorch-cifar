@@ -52,7 +52,7 @@ val_test_transform = transforms.Compose([
     transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
 ])
 
-batch_size = 128
+batch_size = 32
 val_split = 0.1
 num_workers = 8
 
@@ -92,7 +92,7 @@ print('\n==> Building model..')
 act_fns = [nn.ReLU, nn.LeakyReLU, MishAuto, SwishAuto, ProposedAuto, nn.Sigmoid, nn.GELU, nn.Tanh]
 # net, model_name = BasicConvResModel(len(classes), nn.ReLU)
 net, model_name = BasicConvModel(3, len(classes), act_fns[args.act_fn - 1])
-
+ds_name = 'CIFAR10'
 max_epochs = args.max_epochs
 total_epochs = max_epochs - start_epoch
 
@@ -105,7 +105,7 @@ if args.resume:
     # Load checkpoint.
     print('==> Resuming from checkpoint..')
     assert os.path.isdir('checkpoint'), 'Error: no checkpoint directory found!'
-    checkpoint = torch.load('./checkpoint/ckpt.pth')
+    checkpoint = torch.load('./checkpoint/ckpt.pt')
     net.load_state_dict(checkpoint['net'])
     best_acc = checkpoint['acc']
     start_epoch = checkpoint['epoch']
@@ -115,7 +115,10 @@ curr_time = lambda: datetime.strftime(datetime.now(), fmt)
 ckpt_dir = model_name
 start_time = curr_time()
 
-logfile = "./logs/{}-{}-epochs-{}.log".format(model_name, start_time, total_epochs)
+if not os.path.isdir('./logs/{}'.format(ds_name)):
+    os.mkdir('./logs/{}'.format(ds_name))
+
+logfile = "./logs/{}/{}-{}-epochs-{}.log".format(ds_name, model_name, start_time, total_epochs)
 logging.basicConfig(filename=logfile, level=logging.INFO, format='%(asctime)s %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p - ')
 logging.info("Logger initialized.")
 
@@ -128,9 +131,11 @@ for message in [
     logging.info(message)
 
 criterion = nn.CrossEntropyLoss()
-optimizer = optim.SGD(net.parameters(), lr=args.lr,
-                      momentum=0.9, weight_decay=5e-4)
-scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=max_epochs)
+optimizer = optim.RMSprop(net.parameters(), lr=0.01)#args.lr,
+                          #weight_decay=1e-6)
+# optimizer = optim.SGD(net.parameters(), lr=args.lr,
+#                       momentum=0.9, weight_decay=5e-4)
+# scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=max_epochs)
 
 # Training
 def train(epoch):
@@ -196,18 +201,22 @@ def val(epoch):
             'acc': acc,
             'epoch': epoch,
         }
-        if not os.path.isdir('checkpoint'):
+
+        if not os.path.isdir('checkpoint/'):
             os.mkdir('checkpoint')
 
-        if not os.path.isdir('checkpoint/{}'.format(ckpt_dir)):
-            os.mkdir('checkpoint/{}'.format(ckpt_dir))
+        if not os.path.isdir('checkpoint/{}'.format(ds_name)):
+            os.mkdir('checkpoint/{}'.format(ds_name))
 
-        if not os.path.isdir('checkpoint/{}/{}'.format(ckpt_dir, start_time)):
-            os.mkdir('checkpoint/{}/{}'.format(ckpt_dir, start_time))
+        if not os.path.isdir('checkpoint/{}/{}'.format(ds_name, ckpt_dir)):
+            os.mkdir('checkpoint/{}/{}'.format(ds_name, ckpt_dir))
+
+        if not os.path.isdir('checkpoint/{}/{}/{}'.format(ds_name, ckpt_dir, start_time)):
+            os.mkdir('checkpoint/{}/{}/{}'.format(ds_name, ckpt_dir, start_time))
 
         torch.save(
             state, 
-            './checkpoint/{}/{}/{}.pth'.format(ckpt_dir, start_time, curr_time()))
+            './checkpoint/{}/{}/{}/{}.pt'.format(ds_name, ckpt_dir, start_time, curr_time()))
         best_acc = acc
 
 def test():
@@ -218,7 +227,7 @@ def test():
 for epoch in range(total_epochs):
     train(epoch)
     val(epoch)
-    scheduler.step()
+    # scheduler.step()
 
 print("\nEvaluating on test set...")
 test()

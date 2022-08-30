@@ -102,7 +102,7 @@ if args.resume:
     # Load checkpoint.
     print('==> Resuming from checkpoint..')
     assert os.path.isdir('checkpoint'), 'Error: no checkpoint directory found!'
-    checkpoint = torch.load('./checkpoint/ckpt.pth')
+    checkpoint = torch.load('./checkpoint/ckpt.pt')
     net.load_state_dict(checkpoint['net'])
     best_acc = checkpoint['acc']
     start_epoch = checkpoint['epoch']
@@ -128,9 +128,10 @@ for message in [
     logging.info(message)
 
 criterion = nn.CrossEntropyLoss()
-optimizer = optim.SGD(net.parameters(), lr=args.lr,
-                      momentum=0.9, weight_decay=5e-4)
-scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=max_epochs)
+optimizer = optim.RMSprop(net.parameters(), lr=0.01)#args.lr,
+                          # momentum=0.9, weight_decay=5e-4)
+# optimizer = optim.SGD(net.parameters(), lr=args.lr,
+#                       momentum=0.9, weight_decay=5e-4)
 
 # Training
 def train(epoch):
@@ -210,7 +211,7 @@ def val(epoch):
 
         torch.save(
             state, 
-            './checkpoint/{}/{}/{}/{}.pth'.format(ds_name, ckpt_dir, start_time, curr_time()))
+            './checkpoint/{}/{}/{}/{}.pt'.format(ds_name, ckpt_dir, start_time, curr_time()))
         best_acc = acc
 
 def test():
@@ -221,7 +222,6 @@ def test():
 for epoch in range(total_epochs):
     train(epoch)
     val(epoch)
-    scheduler.step()
 
 print("\nEvaluating on test set...")
 test()

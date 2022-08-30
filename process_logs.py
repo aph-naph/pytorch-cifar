@@ -11,6 +11,7 @@ def get_loss_acc(line):
 def process_text(text):
     train_loss_acc = []
     val_loss_acc = []
+    test_loss_acc = None
     model_name = ''
 
     for line in text:
@@ -20,6 +21,8 @@ def process_text(text):
             train_loss_acc.append(get_loss_acc(line))
         elif '| Val' in line:
             val_loss_acc.append(get_loss_acc(line))
+        elif '| Test' in line:
+            test_loss_acc = get_loss_acc(line)
     
     if not model_name:
         raise ValueError("Model name not found.")
@@ -27,18 +30,19 @@ def process_text(text):
     if not train_loss_acc or not val_loss_acc:
         raise ValueError("Invalid log file.")
 
-    return {model_name: [train_loss_acc, val_loss_acc]}
+    return {model_name: [train_loss_acc, val_loss_acc, test_loss_acc]}
 
 def write_json(model_logs, data_filename):
-    keys = ['model_name', 'train_loss', 'train_acc', 'val_loss', 'val_acc']
+    keys = ['model_name', 'train_loss', 'train_acc', 'val_loss', 'val_acc', 'test_loss', 'test_acc']
     data = []
 
     for (model, log) in model_logs.items():
-        train_loss_acc, val_loss_acc = log
+        train_loss_acc, val_loss_acc, test_loss_acc = log
         print(model)
-        tloss, tacc = map(list, zip(*train_loss_acc))
+        trloss, tracc = map(list, zip(*train_loss_acc))
         vloss, vacc = map(list, zip(*val_loss_acc))
-        values = [model, tloss, tacc, vloss, tacc]
+        tloss, tacc = test_loss_acc
+        values = [model, trloss, tracc, vloss, tracc, tloss, tacc]
         new_data = {k: v for (k, v) in zip(keys, values)}
 
         # Bad practice
@@ -51,22 +55,47 @@ def write_json(model_logs, data_filename):
         with open(data_filename, 'w') as f:
             json.dump(data, f, indent=2)
 
-if __name__ == "__main__":
-    """
-    d = './logs/MNIST/'
-    logs = os.listdir(d)
+def get_logs(logs_dir):
+    # There maybe multiple logs due to multiple runs 
+    # Pick the latest log
+    act_fn_map = collections.defaultdict(lambda: '')
 
-    # filename = "./logs/MNIST/BasicConvModel-GELU-18-08-2022-12:44:54-epochs-20.log"
+    for filename in os.listdir(logs_dir):
+        if len(splits := filename.split('-')) > 2:
+            key = splits[1] # Key is name of the activation function        
+            if act_fn_map[key] < (path := os.path.join(d, filename)):
+                act_fn_map[key] = path
+
+    return act_fn_map.values()
+
+if __name__ == "__main__":
+    # MNIST
+    d = './old_logs_ckpt_20_8_2022/logs/'
+    logs = os.listdir(d)
+    data_filename = "mnist_log.json"
+    print(get_logs(d))
+    """
+    if os.path.isfile(data_filename):    
+        os.remove(data_filename)
+
     for filename in logs:
         with open(os.path.join(d, filename), "r") as f:
             text = f.readlines()
 
         data = process_text(text)
-        write_json(data, "mnist_log.json")
-    """
+        write_json(data, data_filename)
 
+    with open(data_filename) as f:
+        data = json.load(f)
+
+    data = {"data": data}
+
+    with open(data_filename, 'w') as f:
+        json.dump(data, f, indent=2)
+    """
+    """
     # CIFAR10
-    d = './logs/'
+    d = './logs/CIFAR10'
     logs = os.listdir(d)
     data_filename = "cifar10_log.json"
 
@@ -102,3 +131,4 @@ if __name__ == "__main__":
 
     with open(data_filename, 'w') as f:
         json.dump(data, f, indent=2)
+    """
