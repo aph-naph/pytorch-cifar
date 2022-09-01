@@ -22,9 +22,22 @@ import logging
 import random # only used for seeding
 import numpy as np # only used for seeding
 
-torch.manual_seed(0)
-random.seed(0)
-np.random.seed(0)
+SEED = 123
+
+def set_seed(seed):
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)  # if you are using multi-GPU.
+    np.random.seed(seed)  # Numpy module.
+    random.seed(seed)  # Python random module.
+    torch.manual_seed(seed)
+    torch.backends.cudnn.benchmark = False
+    torch.backends.cudnn.deterministic = True
+
+def _init_fn(worker_id):
+    np.random.seed(SEED)
+
+set_seed(SEED)
 
 parser = argparse.ArgumentParser(description='PyTorch CIFAR10 Training')
 parser.add_argument('--act_fn', default=1, type=int, help='activation function')
@@ -64,7 +77,8 @@ train_loader, val_loader, test_loader = get_data_loaders(
     test_transform=val_test_transform,
     batch_size=batch_size,
     val_split=val_split,
-    num_workers=num_workers
+    num_workers=num_workers,
+    worker_init_fn=_init_fn
 )
 
 classes = ('plane', 'car', 'bird', 'cat', 'deer',
@@ -131,7 +145,8 @@ for message in [
     logging.info(message)
 
 criterion = nn.CrossEntropyLoss()
-optimizer = optim.RMSprop(net.parameters(), lr=0.01)#args.lr,
+optimizer = optim.RMSprop(net.parameters(), lr=0.05)#, momentum=0.9)
+# optimizer = optim.RMSprop(net.parameters(), lr=0.01)#args.lr,
                           #weight_decay=1e-6)
 # optimizer = optim.SGD(net.parameters(), lr=args.lr,
 #                       momentum=0.9, weight_decay=5e-4)
