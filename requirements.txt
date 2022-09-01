@@ -1,4 +1,6 @@
 numpy==1.22.4
 opencv-python==4.6.0
-torch==1.12.1
-torchvision==0.13.1
+
+--find-links https://download.pytorch.org/whl/cu113/torch_stable.html; sys_platform == "linux"
+torch==1.12.1; sys_platform == "linux"
+torchvision==0.13.1; sys_platform == "linux"
