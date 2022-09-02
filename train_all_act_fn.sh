@@ -13,7 +13,7 @@ fi
 echo "File name is $filename";
 echo "Epochs is $epochs";
 
-for i in {6..8};
+for i in {1..8};
 do
     echo "$i"
     python $filename --act_fn="$i" --max_epochs=$epochs
