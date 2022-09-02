@@ -145,10 +145,10 @@ for message in [
     logging.info(message)
 
 criterion = nn.CrossEntropyLoss()
-optimizer = optim.RMSprop(net.parameters(), lr=0.05)#, momentum=0.9)
+# optimizer = optim.RMSprop(net.parameters(), lr=0.05)#, momentum=0.9)
 # optimizer = optim.RMSprop(net.parameters(), lr=0.01)#args.lr,
                           #weight_decay=1e-6)
-# optimizer = optim.SGD(net.parameters(), lr=args.lr,
+optimizer = optim.SGD(net.parameters(), lr=args.lr)
 #                       momentum=0.9, weight_decay=5e-4)
 # scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=max_epochs)
 

@@ -8,19 +8,19 @@ def conv_bn(channels_in, channels_out, kernel_size=3, stride=1, padding=1, group
             ch.nn.Conv2d(channels_in, channels_out, kernel_size=kernel_size,
                          stride=stride, padding=padding, groups=groups, bias=False),
             ch.nn.BatchNorm2d(channels_out),
-            act_fn(inplace=True)
+            act_fn()
     )
 
 def BasicConvModel(n_channels, num_classes, act_fn=ch.nn.ReLU):
     model_name = f"BasicConvModel-{act_fn.__name__}"
     model = ch.nn.Sequential(
-        conv_bn(n_channels, 64, kernel_size=3, stride=1, padding=1),
-        conv_bn(64, 128, kernel_size=5, stride=2, padding=2),
-        conv_bn(128, 256, kernel_size=3, stride=1, padding=1),
+        conv_bn(n_channels, 64, kernel_size=3, stride=1, padding=1, act_fn=act_fn),
+        conv_bn(64, 128, kernel_size=5, stride=2, padding=2, act_fn=act_fn),
+        conv_bn(128, 256, kernel_size=3, stride=1, padding=1, act_fn=act_fn),
         ch.nn.MaxPool2d(2),
-        conv_bn(256, 256),
-        conv_bn(256, 256),
-        conv_bn(256, 128, kernel_size=3, stride=1, padding=0),
+        conv_bn(256, 256, act_fn=act_fn),
+        conv_bn(256, 256, act_fn=act_fn),
+        conv_bn(256, 128, kernel_size=3, stride=1, padding=0, act_fn=act_fn),
         ch.nn.AdaptiveMaxPool2d((1, 1)),
         Flatten(),
         ch.nn.Linear(128, num_classes, bias=False),

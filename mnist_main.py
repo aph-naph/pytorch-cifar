@@ -128,10 +128,10 @@ for message in [
     logging.info(message)
 
 criterion = nn.CrossEntropyLoss()
-optimizer = optim.RMSprop(net.parameters(), lr=0.01)#args.lr,
+# optimizer = optim.RMSprop(net.parameters(), args.lr)
                           # momentum=0.9, weight_decay=5e-4)
-# optimizer = optim.SGD(net.parameters(), lr=args.lr,
-#                       momentum=0.9, weight_decay=5e-4)
+optimizer = optim.SGD(net.parameters(), lr=args.lr)
+#                        momentum=0.9, weight_decay=5e-4)
 
 # Training
 def train(epoch):
